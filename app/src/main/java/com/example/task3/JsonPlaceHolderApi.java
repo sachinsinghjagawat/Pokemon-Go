@@ -11,7 +11,5 @@ public interface JsonPlaceHolderApi {
     @GET ("pokemon/{id}")
     Call<Pokemon> getPokemon (@Path("id") int id);
 
-//    @GET ("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{id}.png")
-//    Call<Pokemon> getPokemonImage (@Path("id") int id);
 
 }

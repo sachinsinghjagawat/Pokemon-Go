@@ -27,6 +27,10 @@ public class MainActivity extends AppCompatActivity {
     private List<ListItem> listItems;
     JsonPlaceHolderApi jsonPlaceHolderApi;
     String heading = null;
+    String description = null;
+    String moves;
+    String statistics;
+    String types;
     Retrofit retrofit;
     ListItem listItem ;
     ProgressBar progressBar;
@@ -48,12 +52,10 @@ public class MainActivity extends AppCompatActivity {
         retrofit = new Retrofit.Builder().baseUrl("https://pokeapi.co/api/v2/").addConverterFactory(GsonConverterFactory.create()).build();
         jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
 
-        //image and name of the pokemon
-        for(int i=1 ; i<=50 ; i++) {
+        //image and name and base_Experience of the pokemon
+        for(int i=1 ; i<=20 ; i++) {
             Call<Pokemon> call = jsonPlaceHolderApi.getPokemon(i);
             final String url = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" + i + ".png";
-//            listItem.setImage(url);
-//            listItem.setDescription("desc");
             Log.i("initial place" , "hi");
 
             call.enqueue(new Callback<Pokemon>() {
@@ -65,21 +67,45 @@ public class MainActivity extends AppCompatActivity {
                     }
                     assert response.body() != null;
                     heading = response.body().getName();
-                    listItem = new ListItem(heading , "description" , url);
+
+                    description = "Base Experience : ";
+                    description += response.body().getExperience();
+
+                    moves = response.body().getMoves().get(0).getMoveNames().getNames() + ", ";
+                    moves += response.body().getMoves().get(1).getMoveNames().getNames() + ", ";
+                    moves += response.body().getMoves().get(2).getMoveNames().getNames() + ", ";
+                    moves += response.body().getMoves().get(3).getMoveNames().getNames();
+
+                    statistics = "" ;
+                    for(int j=0 ; j<5 ; j++) {
+                        statistics += response.body().getStatistics().get(j).getStatName().getNames()
+                                + " ( Base Percent " + response.body().getStatistics().get(j).getBaseStat() + " )\n";
+                    }
+
+                    types = "" ;
+                    for(int j=0 ; j<response.body().getTypeNames().size() ; j++) {
+                        types += response.body().getTypeNames().get(j).getType().getNames() + "\n";
+                    }
+
+                    listItem = new ListItem(heading , description , url , moves , statistics ,types );
                     listItems.add(listItem);
-//                    listItem.setHeading(heading);
                     adapter.notifyDataSetChanged();
-                    if(listItems.size() == 50){
+                    if(listItems.size() == 20){
                         progressBar.setVisibility(View.GONE);
                     }
 
-                    Log.i("aur batao"  , heading);
+                    Log.i("heading"  , heading);
+                    Log.i("description"  , description);
+                    Log.i("moves"  , moves);
+                    Log.i("statistics"  , statistics);
+                    Log.i("types"  , types);
+
                 }
 
                 @Override
                 public void onFailure(Call<Pokemon> call, Throwable t) {
                     Toast.makeText(MainActivity.this, "failure", Toast.LENGTH_SHORT).show();
-                    Log.i("error bhai" , String.valueOf(t.getCause()));
+                    Log.i("error bhai" , String.valueOf(t.getMessage()));
                 }
             });
             Log.i("final place" , "don dana done");

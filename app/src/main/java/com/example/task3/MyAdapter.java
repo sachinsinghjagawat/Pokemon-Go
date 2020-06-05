@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -40,7 +41,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         ListItem listItem = listItemList.get(position);
         holder.headingText.setText(listItem.getHeading());
         holder.descriptionText.setText(listItem.getDescription());
+        holder.moves.setText(listItem.getMove());
+        holder.statistics.setText(listItem.getStatistics());
+        holder.types.setText(listItem.getTypes());
         Picasso.get().load(listItem.getImageUrl()).fit().centerCrop().into(holder.image);
+
+        boolean isExpanded = listItem.isExpandable();
+        holder.expandableView.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -53,6 +60,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         public TextView headingText;
         public TextView descriptionText;
         public ImageView image;
+        public TextView moves;
+        public TextView statistics;
+        public TextView types;
+        public LinearLayout expandableView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -60,6 +71,24 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             headingText = (TextView) itemView.findViewById(R.id.headingTextView);
             descriptionText = (TextView) itemView.findViewById(R.id.textView2);
             image = (ImageView) itemView.findViewById(R.id.imageView);
+            moves = (TextView) itemView.findViewById(R.id.textView6);
+            statistics = (TextView) itemView.findViewById(R.id.textView8);
+            types = (TextView) itemView.findViewById(R.id.textView10);
+            LinearLayout showView = (LinearLayout) itemView.findViewById(R.id.showView);
+            expandableView = (LinearLayout) itemView.findViewById(R.id.expandableView);
+
+            showView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    ListItem listItem = listItemList.get(getAdapterPosition());
+                    listItem.setExpandable( !listItem.isExpandable());
+                    notifyItemChanged(getAdapterPosition());
+
+                }
+            });
+
+
         }
     }
 }
