@@ -18,12 +18,17 @@ import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
+    private Context context1;
     private List<ListItem> listItemList;
-    private Context context;
+    private PokemonFragment context;
 
-    public MyAdapter(List<ListItem> listItemList, Context context) {
+    public MyAdapter(List<ListItem> listItemList, PokemonFragment context) {
         this.listItemList = listItemList;
         this.context = context;
+    }
+    public MyAdapter(List<ListItem> listItemList, Context context) {
+        this.listItemList = listItemList;
+        this.context1 = context;
     }
 
     @NonNull

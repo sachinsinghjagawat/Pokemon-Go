@@ -1,15 +1,24 @@
 package com.example.task3;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,20 +29,21 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private RecyclerView recyclerView;
-    private RecyclerView.Adapter adapter;
-    private List<ListItem> listItems;
-    JsonPlaceHolderApi jsonPlaceHolderApi;
-    String heading = null;
-    String description = null;
-    String moves;
-    String statistics;
-    String types;
-    Retrofit retrofit;
-    ListItem listItem ;
-    ProgressBar progressBar;
+//    private RecyclerView recyclerView;
+//    private RecyclerView.Adapter adapter;
+//    private List<ListItem> listItems;
+//    JsonPlaceHolderApi jsonPlaceHolderApi;
+//    String heading = null;
+//    String description = null;
+//    String moves;
+//    String statistics;
+//    String types;
+//    Retrofit retrofit;
+//    ListItem listItem ;
+//    ProgressBar progressBar;
+    DrawerLayout drawerLayout;
 
 
     @Override
@@ -41,8 +51,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        progressBar = (ProgressBar) findViewById(R.id.progressBar) ;
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this , drawerLayout , toolbar , R.string.navigation_drawer_open , R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+
+        if(savedInstanceState== null){
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer , new PokemonFragment()).commit();
+            navigationView.setCheckedItem(R.id.nav_pokemon);
+        }
+/*
+        progressBar = (ProgressBar) findViewById(R.id.progressBar1) ;
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView1);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         listItems = new ArrayList<>();
@@ -115,7 +141,17 @@ public class MainActivity extends AppCompatActivity {
 
 
         adapter.notifyDataSetChanged();
+*/
 
     }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.nav_pokemon :
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer , new PokemonFragment()).commit();
+                break;
+        }
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;    }
 }
