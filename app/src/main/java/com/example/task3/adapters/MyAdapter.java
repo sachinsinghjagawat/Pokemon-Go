@@ -1,7 +1,6 @@
-package com.example.task3;
+package com.example.task3.adapters;
 
 import android.content.Context;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.task3.adapterBhaibandhu.ListItem;
+import com.example.task3.R;
+import com.example.task3.fragments.PokemonFragment;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

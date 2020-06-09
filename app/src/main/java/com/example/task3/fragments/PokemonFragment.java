@@ -1,9 +1,7 @@
-package com.example.task3;
+package com.example.task3.fragments;
 
 import androidx.lifecycle.ViewModelProviders;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,6 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.example.task3.JsonPlaceHolderApi;
+import com.example.task3.adapterBhaibandhu.ListItem;
+import com.example.task3.adapters.MyAdapter;
+import com.example.task3.dataCollection.Pokemon;
+import com.example.task3.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,80 +59,7 @@ public class PokemonFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.pokemon_fragment, container, false);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
-//        listItems = new ArrayList<>();
 
-//        recyclerView.setHasFixedSize(true);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-//        adapter1 = new MyAdapter(listItems , PokemonFragment.this);
-//        recyclerView.setAdapter(adapter1);
-//
-//
-//        retrofit = new Retrofit.Builder().baseUrl("https://pokeapi.co/api/v2/").addConverterFactory(GsonConverterFactory.create()).build();
-//        jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
-
-/*
-        //image and name and base_Experience of the pokemon
-        for(int i=1 ; i<=20 ; i++) {
-            Call<Pokemon> call = jsonPlaceHolderApi.getPokemon(i);
-            final String url = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" + i + ".png";
-            Log.i("initial place" , "hi");
-
-            call.enqueue(new Callback<Pokemon>() {
-                @Override
-                public void onResponse(Call<Pokemon> call, Response<Pokemon> response) {
-                    if(!response.isSuccessful()){
-                        Toast.makeText(getActivity(), "Could not connect :(", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    assert response.body() != null;
-                    heading = response.body().getName();
-
-                    description = "Base Experience : ";
-                    description += response.body().getExperience();
-
-                    moves = response.body().getMoves().get(0).getMoveNames().getNames() + ", ";
-                    moves += response.body().getMoves().get(1).getMoveNames().getNames() + ", ";
-                    moves += response.body().getMoves().get(2).getMoveNames().getNames() + ", ";
-                    moves += response.body().getMoves().get(3).getMoveNames().getNames();
-
-                    statistics = "" ;
-                    for(int j=0 ; j<5 ; j++) {
-                        statistics += response.body().getStatistics().get(j).getStatName().getNames()
-                                + " ( Base Percent " + response.body().getStatistics().get(j).getBaseStat() + " )\n";
-                    }
-
-                    types = "" ;
-                    for(int j=0 ; j<response.body().getTypeNames().size() ; j++) {
-                        types += response.body().getTypeNames().get(j).getType().getNames() + "\n";
-                    }
-
-                    listItem = new ListItem(heading , description , url , moves , statistics ,types );
-                    listItems.add(listItem);
-                    adapter1.notifyDataSetChanged();
-                    if(listItems.size() == 20){
-                        progressBar.setVisibility(View.GONE);
-                    }
-
-                    Log.i("heading"  , heading);
-                    Log.i("description"  , description);
-                    Log.i("moves"  , moves);
-                    Log.i("statistics"  , statistics);
-                    Log.i("types"  , types);
-
-                }
-
-                @Override
-                public void onFailure(Call<Pokemon> call, Throwable t) {
-                    Toast.makeText(getActivity(), "failure", Toast.LENGTH_SHORT).show();
-                    Log.i("error bhai" , String.valueOf(t.getMessage()));
-                }
-            });
-            Log.i("final place" , "don dana done");
-            adapter1.notifyDataSetChanged();
-        }
-
-        adapter1.notifyDataSetChanged();
-*/
 
         return rootView;
 
@@ -177,7 +108,8 @@ public class PokemonFragment extends Fragment {
                         return;
                     }
                     assert response.body() != null;
-                    heading = response.body().getName();
+                    String temp = response.body().getName();
+                    heading = temp.substring(0 , 1).toUpperCase() + temp.substring(1);
 
                     description = "Base Experience : ";
                     description += response.body().getExperience();

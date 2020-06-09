@@ -7,6 +7,10 @@
             android:icon="@drawable/pokemon_logo"
             android:title="Pokemon"/>
         <item
+            android:id="@+id/nav_itmes"
+            android:icon="@drawable/item_logo"
+            android:title="Items"/>
+        <item
             android:id="@+id/nav_location"
             android:icon="@drawable/location_logo"
             android:title="Location"/>

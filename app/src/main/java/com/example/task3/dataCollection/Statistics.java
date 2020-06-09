@@ -1,5 +1,6 @@
-package com.example.task3;
+package com.example.task3.dataCollection;
 
+import com.example.task3.dataCollection.MoveName;
 import com.google.gson.annotations.SerializedName;
 
 public class Statistics {
