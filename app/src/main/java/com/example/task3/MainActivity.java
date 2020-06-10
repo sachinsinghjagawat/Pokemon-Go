@@ -8,6 +8,8 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.example.task3.fragments.FavouriteFragment;
@@ -47,6 +49,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.search , menu);
+
+
+
+//        return true;
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.nav_pokemon : {
@@ -78,5 +91,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
         drawerLayout.closeDrawer(GravityCompat.START);
-        return true;    }
+        return true;
+    }
+
 }

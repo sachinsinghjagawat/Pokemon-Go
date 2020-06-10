@@ -12,14 +12,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.example.task3.JsonPlaceHolderApi;
 import com.example.task3.adapterBhaibandhu.ListItem;
+import com.example.task3.adapters.ItemsAdapter;
 import com.example.task3.adapters.MyAdapter;
+import com.example.task3.adapters.RegionAdapter;
 import com.example.task3.dataCollection.Pokemon;
 import com.example.task3.R;
 
@@ -50,6 +57,12 @@ public class PokemonFragment extends Fragment {
 
     public static PokemonFragment newInstance() {
         return new PokemonFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -94,8 +107,8 @@ public class PokemonFragment extends Fragment {
         retrofit = new Retrofit.Builder().baseUrl("https://pokeapi.co/api/v2/").addConverterFactory(GsonConverterFactory.create()).build();
         jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
 
-        //image and name and base_Experience of the pokemon
-        for(int i=1 ; i<=20 ; i++) {
+        //image and name and base_Experience of the pokemon. I have set progress bar disappear on 30 items so as to avoid irritation of user
+        for(int i=1 ; i<=50 ; i++) {
             Call<Pokemon> call = jsonPlaceHolderApi.getPokemon(i);
             final String url = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" + i + ".png";
             Log.i("initial place" , "hi");
@@ -133,7 +146,7 @@ public class PokemonFragment extends Fragment {
                     listItem = new ListItem(heading , description , url , moves , statistics ,types );
                     listItems.add(listItem);
                     adapter1.notifyDataSetChanged();
-                    if(listItems.size() == 20){
+                    if(listItems.size() == 30){
                         progressBar.setVisibility(View.GONE);
                     }
 
@@ -147,7 +160,7 @@ public class PokemonFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<Pokemon> call, Throwable t) {
-                    Toast.makeText(getActivity(), "failure", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getActivity(), "failure", Toast.LENGTH_SHORT).show();
                     Log.i("error bhai" , String.valueOf(t.getMessage()));
                 }
             });
@@ -157,4 +170,31 @@ public class PokemonFragment extends Fragment {
 
         adapter1.notifyDataSetChanged();
     }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        MenuItem searchItem = menu.findItem(R.id.search);
+        SearchView searchView =  (SearchView) searchItem.getActionView() ;
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            public MyAdapter adapter = (MyAdapter) adapter1;
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.i("Pressed" , "Submit");
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.i("pressed" , "Change");
+                adapter.getFilter().filter(newText);
+                return true;
+            }
+        });
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
 }

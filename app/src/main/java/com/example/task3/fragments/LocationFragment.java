@@ -12,9 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.example.task3.JsonPlaceHolderApi;
@@ -48,6 +53,12 @@ public class LocationFragment extends Fragment {
 
     public static LocationFragment newInstance() {
         return new LocationFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -118,10 +129,38 @@ public class LocationFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<Category> call, Throwable t) {
-                    Toast.makeText(getActivity(), "failure", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getActivity(), "failure", Toast.LENGTH_SHORT).show();
                     Log.i("error bhai" , String.valueOf(t.getMessage()));
                 }
             });
         }
     }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        MenuItem searchItem = menu.findItem(R.id.search);
+        SearchView searchView =  (SearchView) searchItem.getActionView() ;
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            public LoctionAdapter adapter1 = (LoctionAdapter) adapter;
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.i("Pressed" , "Submit");
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.i("pressed" , "Change");
+                adapter1.getFilter().filter(newText);
+                return true;
+            }
+        });
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
 }

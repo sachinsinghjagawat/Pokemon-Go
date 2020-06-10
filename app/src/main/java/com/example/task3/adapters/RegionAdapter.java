@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,16 +18,22 @@ import com.example.task3.adapterBhaibandhu.ItemsItem;
 import com.example.task3.adapterBhaibandhu.RegionItem;
 import com.example.task3.fragments.RegionFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class RegionAdapter extends RecyclerView.Adapter<RegionAdapter.ViewHolder> {
+public class RegionAdapter extends RecyclerView.Adapter<RegionAdapter.ViewHolder> implements Filterable {
 
     private RegionFragment context;
     private List<RegionItem> riList;
+    private List<RegionItem> riListFull;
+    int count = 0;
+
+
 
     public RegionAdapter(RegionFragment context, List<RegionItem> riList) {
         this.context = context;
         this.riList = riList;
+//        riListFull = new ArrayList<>(riList);
     }
 
     @NonNull
@@ -50,6 +58,46 @@ public class RegionAdapter extends RecyclerView.Adapter<RegionAdapter.ViewHolder
     public int getItemCount() {
         return riList.size();
     }
+
+    @Override
+    public Filter getFilter() {
+        return listFilter;
+    }
+
+    private Filter listFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+
+            count++ ;
+            if (count == 1) {
+                riListFull = new ArrayList<>(riList);
+            }
+
+            List<RegionItem> filteredList = new ArrayList<>();
+            if (constraint == null || constraint.length() == 0){
+                filteredList.addAll(riList);
+            }else{
+                String filterPattern  = constraint.toString().toLowerCase().trim();
+                for (RegionItem item : riListFull){
+                    if(item.getRegion().toLowerCase().contains(constraint)){
+                        filteredList.add(item);
+                    }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            riList.clear();
+            riList.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView region;

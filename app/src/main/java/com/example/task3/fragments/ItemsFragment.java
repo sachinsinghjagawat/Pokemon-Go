@@ -10,9 +10,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.example.task3.JsonPlaceHolderApi;
@@ -72,6 +78,7 @@ public class ItemsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -87,6 +94,7 @@ public class ItemsFragment extends Fragment {
     JsonPlaceHolderApi jsonPlaceHolderApi;
     int count = 0;
     int currentCount = 0;
+
 
 
     @Override
@@ -169,10 +177,38 @@ public class ItemsFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<Category> call, Throwable t) {
-                    Toast.makeText(getActivity(), "failure", Toast.LENGTH_SHORT).show();
                     Log.i("error bhai" , String.valueOf(t.getMessage()));
                 }
             });
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        MenuItem searchItem = menu.findItem(R.id.search);
+        SearchView searchView =  (SearchView) searchItem.getActionView() ;
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            public ItemsAdapter adapter1 = (ItemsAdapter) adapter;
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.i("Pressed" , "Submit");
+                new ItemsAdapter(ItemsFragment.this , listItems).getFilter().filter(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.i("pressed" , "Change");
+                adapter1.getFilter().filter(newText);
+                return true;
+            }
+        });
+        adapter.notifyDataSetChanged();
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 }

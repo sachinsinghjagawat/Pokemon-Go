@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,16 +18,21 @@ import com.example.task3.adapterBhaibandhu.ItemsItem;
 import com.example.task3.adapterBhaibandhu.LocationItem;
 import com.example.task3.fragments.LocationFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class LoctionAdapter extends RecyclerView.Adapter<LoctionAdapter.ViewHolder> {
+public class LoctionAdapter extends RecyclerView.Adapter<LoctionAdapter.ViewHolder> implements Filterable {
 
     private LocationFragment context;
     private List<LocationItem> liList;
+    private List<LocationItem> liListFull;
+    int count = 0;
+
 
     public LoctionAdapter(LocationFragment context, List<LocationItem> liList) {
         this.context = context;
         this.liList = liList;
+//        liListFull = new ArrayList<>(liList);
     }
 
     @NonNull
@@ -51,6 +58,47 @@ public class LoctionAdapter extends RecyclerView.Adapter<LoctionAdapter.ViewHold
     public int getItemCount() {
         return liList.size();
     }
+
+    @Override
+    public Filter getFilter() {
+        return listFilter;
+    }
+
+    private Filter listFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+
+            count++ ;
+            if (count == 1) {
+                liListFull = new ArrayList<>(liList);
+            }
+
+            List<LocationItem> filteredList = new ArrayList<>();
+            if (constraint == null || constraint.length() == 0){
+                filteredList.addAll(liList);
+            }else{
+                String filterPattern  = constraint.toString().toLowerCase().trim();
+                for (LocationItem item : liListFull){
+                    if(item.getLocation().toLowerCase().contains(constraint)){
+                        filteredList.add(item);
+                    }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            liList.clear();
+            liList.addAll((List) results.values);
+
+            notifyDataSetChanged();
+        }
+    };
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView location;
